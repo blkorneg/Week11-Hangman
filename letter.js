@@ -6,7 +6,9 @@ var Letter = function(ltr) {
 
   this.letterRender = function() {
     if(this.letter == ' '){ /*renders a blank as it is*/
-      return '   ';
+      //makes sure that when the function checks if the word is found doesn't read the blank as false.
+      this.appear = true;
+      return '  ';
     }if(this.appear === false){ /*if it doesn't appear, it returns a ' _ '*/
       return ' _ ';
     } else{ /*otherwise it just appears as itself*/
