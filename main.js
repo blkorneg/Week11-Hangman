@@ -5,6 +5,10 @@ var isLetter = require('is-letter');
 var Word = require('./word.js');
 var Game = require('./game.js');
 
+//set the maxListener
+require('events').EventEmitter.prototype._maxListeners = 100;
+
+
 var hangman = {
   wordBank: Game.newWord.wordList,
   wordsWon: 0,
@@ -68,16 +72,15 @@ var hangman = {
     }]).then(function(ltr) {
       //toUpperCase because words in word bank are all caps
       var letterReturned = (ltr.chosenLtr).toUpperCase();
-
       //adds to the guessedLetters array if it isn't already there
       var guessedAlready = false;
         for(var i = 0; i<that.guessedLetters.length; i++){
-          if(letterReturned === guessedLetters[i]){
+          if(letterReturned === that.guessedLetters[i]){
             guessedAlready = true;
           }
         }
         if(guessedAlready === false){
-          guessedLetters.push(letterReturned);
+          that. guessedLetters.push(letterReturned);
           console.log('You chose: ' + letterReturned);
         } else{
           //otherwise it re-prompts the user to pick another letter.
@@ -91,17 +94,17 @@ var hangman = {
         console.log('Nope! You guessed wrong.');
         that.guessesRemaining--;
         console.log('Guesses remaining: ' + that.guessesRemaining);
-        console.log(that.currentWrd.wordRender());
+        console.log(that.currentWord.wordRender());
       } else{
         console.log('Yes! You guessed right!');
           //checks to see if user won
-          if(that.currentWord.didWeFindTheWord === true){
+          if(that.currentWord.didWeFindTheWord() === true){
             console.log('Congratulations! You won the game!!!');
-            that.startGame();
+            // that.startGame();
           } else{
             // display the user how many guesses remaining
             console.log('Guesses remaining: ' + that.guessesRemaining);
-            console.log(that.currentWrd.wordRender());
+            console.log(that.currentWord.wordRender());
           }
       }
       if(that.guessesRemaining > 0 && that.currentWord.wordFound === false) {
