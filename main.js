@@ -1,17 +1,25 @@
 //require inquirer
 var inquirer = require('inquirer');
+var isLetter = require('is-letter');
 //require objects/exports
-var word = require('./word.js');
-var game = require('./game.js');
+var Word = require('./word.js');
+var Game = require('./game.js');
 
 var hangman = {
-  wordBank: game.newWord.wordList,
+  wordBank: Game.newWord.wordList,
   wordsWon: 0,
   guessesRemaining: 10,
+  //empty array to hold letters guessed by user. And checks if the user guessed the letter already
+  guessedLetters: [],
   currentWord: null,
   //asks user if they are ready to play
   startGame: function() {
     var that = this;
+    //clears guessedLetters before a new game starts if it's not already empty.
+    if(this.guessedLetters.length > 0){
+      this.guessedLetters = [];
+    }
+
     inquirer.prompt([{
       name: "play",
       type: "confirm",
@@ -27,11 +35,13 @@ var hangman = {
   newGame: function() {
     if(this.guessesRemaining === 10) {
       console.log("Okay! Here we go!");
-      console.log('==================');
+      console.log('*****************');
       //generates random number based on the wordBank
       var randNum = Math.floor(Math.random()*this.wordBank.length);
       this.currentWord = new Word(this.wordBank[randNum]);
-
+      this.currentWord.getLets();
+      //displays current word as blanks.
+      console.log(this.currentWord.wordRender());
       this.keepPromptingUser();
     } else{
       this.resetGuessesRemaining();
@@ -43,39 +53,65 @@ var hangman = {
   },
   keepPromptingUser : function(){
     var that = this;
-
+    //asks player for a letter
     inquirer.prompt([{
       name: "chosenLtr",
       type: "input",
-      message: "Choose a letter:"
+      message: "Choose a letter:",
+      validate: function(value) {
+        if(isLetter(value)){
+          return true;
+        } else{
+          return false;
+        }
+      }
     }]).then(function(ltr) {
-      
-    })
-        //console.log(result);
-        
-        // console log the letter you chose
+      //toUpperCase because words in word bank are all caps
+      var letterReturned = (ltr.chosenLtr).toUpperCase();
 
-        //this checks if the letter was found and if it is then it sets that specific letter in the word to be found
+      //adds to the guessedLetters array if it isn't already there
+      var guessedAlready = false;
+        for(var i = 0; i<that.guessedLetters.length; i++){
+          if(letterReturned === guessedLetters[i]){
+            guessedAlready = true;
+          }
+        }
+        if(guessedAlready === false){
+          guessedLetters.push(letterReturned);
+          console.log('You chose: ' + letterReturned);
+        } else{
+          //otherwise it re-prompts the user to pick another letter.
+          console.log("You've guessed that letter already. Try again.")
+          that.keepPromptingUser();
+        }
 
-        //if the user guessed incorrectly minus the number of guesses they have left
-        // and console.log if they were incorrect or correct
-          
-        //check if you win only when you are right
-        //end game
-       
-        
-        // display the user how many guesses remaining
-      
-        // render the word
-
-        // display letters the user has guessed
-
-        // if user has remaining guesses and Word isn't found
-      
-        // if user has no guesses left, show them the word and tell them they lost
-      
-        // else show the user word and rendered
-        
+      var found = that.currentWord.checkIfLetterFound(letterReturned);
+      //if none were found tell user they were wrong
+      if(found === 0){
+        console.log('Nope! You guessed wrong.');
+        that.guessesRemaining--;
+        console.log('Guesses remaining: ' + that.guessesRemaining);
+        console.log(that.currentWrd.wordRender());
+      } else{
+        console.log('Yes! You guessed right!');
+          //checks to see if user won
+          if(that.currentWord.didWeFindTheWord === true){
+            console.log('Congratulations! You won the game!!!');
+            that.startGame();
+          } else{
+            // display the user how many guesses remaining
+            console.log('Guesses remaining: ' + that.guessesRemaining);
+            console.log(that.currentWrd.wordRender());
+          }
+      }
+      if(that.guessesRemaining > 0 && that.currentWord.wordFound === false) {
+        that.keepPromptingUser();
+      }else if(that.guessesRemaining === 0){
+        console.log('Game over!');
+        console.log('The word you were guessing was: ' + that.currentWord.word);
+      } else{
+        console.log(that.currentWord.wordRender());
+      }
     });
   }
 }
