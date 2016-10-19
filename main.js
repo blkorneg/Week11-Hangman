@@ -13,7 +13,6 @@ require('events').EventEmitter.prototype._maxListeners = 100;
 
 var hangman = {
   wordBank: Game.newWord.wordList,
-  wordsWon: 0,
   guessesRemaining: 10,
   //empty array to hold letters guessed by user. And checks if the user guessed the letter already
   guessedLetters: [],
