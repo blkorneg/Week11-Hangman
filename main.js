@@ -4,6 +4,8 @@ var isLetter = require('is-letter');
 //require objects/exports
 var Word = require('./word.js');
 var Game = require('./game.js');
+//hangman graphic
+var hangManDisplay = Game.newWord.hangman;
 
 //set the maxListener
 require('events').EventEmitter.prototype._maxListeners = 100;
@@ -15,6 +17,8 @@ var hangman = {
   guessesRemaining: 10,
   //empty array to hold letters guessed by user. And checks if the user guessed the letter already
   guessedLetters: [],
+  //index to display graphic
+  display: 0,
   currentWord: null,
   //asks user if they are ready to play
   startGame: function() {
@@ -82,16 +86,20 @@ var hangman = {
         //if the letter wasn't guessed already run through entire function, else reprompt user
         if(guessedAlready === false){
           that.guessedLetters.push(letterReturned);
-          console.log('You chose: ' + letterReturned);
 
           var found = that.currentWord.checkIfLetterFound(letterReturned);
           //if none were found tell user they were wrong
           if(found === 0){
             console.log('Nope! You guessed wrong.');
             that.guessesRemaining--;
+            that.display++;
             console.log('Guesses remaining: ' + that.guessesRemaining);
+            console.log(hangManDisplay[(that.display)-1]);
+
+            console.log('\n*****************');
             console.log(that.currentWord.wordRender());
             console.log('\n*****************');
+
             console.log("Letters guessed: " + that.guessedLetters);
           } else{
             console.log('Yes! You guessed right!');
