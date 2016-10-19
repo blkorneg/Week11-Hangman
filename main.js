@@ -95,9 +95,9 @@ var hangman = {
             console.log('Guesses remaining: ' + that.guessesRemaining);
             console.log(hangManDisplay[(that.display)-1]);
 
-            console.log('\n*****************');
+            console.log('\n*******************');
             console.log(that.currentWord.wordRender());
-            console.log('\n*****************');
+            console.log('\n*******************');
 
             console.log("Letters guessed: " + that.guessedLetters);
           } else{
@@ -111,7 +111,7 @@ var hangman = {
                 // display the user how many guesses remaining
                 console.log('Guesses remaining: ' + that.guessesRemaining);
                 console.log(that.currentWord.wordRender());
-                console.log('\n*****************');
+                console.log('\n*******************');
                 console.log("Letters guessed: " + that.guessedLetters);
               }
           }
