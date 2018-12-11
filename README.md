@@ -25,8 +25,5 @@ Created a hangman game ran through Node.js and empowered using JavaScript constr
 * Sublime Text - Text Editor
 * Terminal/Git Bash
 
-## Authors
-
-* **Stefanie Ding** - *JS/Node.js* - [Stefanie Ding](https://github.com/StefanieDing)
 
 
